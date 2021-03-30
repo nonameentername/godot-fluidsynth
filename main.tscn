@@ -1,14 +1,37 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=2 format=2]
 
-[ext_resource path="res://bin/gdmidiplayer.gdns" type="Script" id=1]
+[ext_resource path="res://main.cs" type="Script" id=1]
 
-[sub_resource type="AudioStreamGenerator" id=1]
-
-[node name="main" type="Node2D"]
-
-[node name="player" type="AudioStreamPlayer" parent="."]
-stream = SubResource( 1 )
-autoplay = true
+[node name="Node2D" type="Node2D"]
 script = ExtResource( 1 )
-soundfont = "res://assets/example.sf2"
-"midi file" = "res://assets/example.mid"
+
+[node name="Button" type="Button" parent="."]
+margin_left = 91.0
+margin_top = 89.0
+margin_right = 215.0
+margin_bottom = 139.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Button2" type="Button" parent="."]
+margin_left = 90.0
+margin_top = 161.0
+margin_right = 214.0
+margin_bottom = 211.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Button3" type="Button" parent="."]
+margin_left = 90.0
+margin_top = 295.0
+margin_right = 214.0
+margin_bottom = 345.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+[connection signal="button_down" from="Button" to="." method="_on_Button_button_down"]
+[connection signal="pressed" from="Button" to="." method="_on_Button_pressed"]
+[connection signal="button_down" from="Button2" to="." method="_on_Button2_button_down"]
+[connection signal="button_down" from="Button3" to="." method="_on_Button3_button_down"]

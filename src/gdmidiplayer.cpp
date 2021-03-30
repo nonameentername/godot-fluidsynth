@@ -61,7 +61,8 @@ void GDMidiAudioStreamPlayer::_register_methods() {
 
 GDMidiAudioStreamPlayer::GDMidiAudioStreamPlayer() {
     settings = new_fluid_settings();
-    fluid_settings_setstr(settings, "audio.driver", "pulseaudio");
+
+    //fluid_settings_setstr(settings, "audio.driver", "pulseaudio");
     synth = new_fluid_synth(settings);
     player = new_fluid_player(synth);
     fluid_sfloader_t *my_sfloader = new_fluid_defsfloader(settings);
@@ -101,9 +102,7 @@ void GDMidiAudioStreamPlayer::_process(float delta) {
         fluidsynth_play();
     }
 
-    if (is_playing()) {
-        fill_buffer();
-    }
+    fill_buffer();
 }
 
 void GDMidiAudioStreamPlayer::fill_buffer() {
@@ -118,7 +117,6 @@ void GDMidiAudioStreamPlayer::fill_buffer() {
         index = index + 2;
         to_fill = to_fill - 1;
     }
-
 }
 
 void GDMidiAudioStreamPlayer::set_soundfont(String p_soundfont) {

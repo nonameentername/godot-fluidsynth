@@ -42,10 +42,21 @@ config/name="MidiPlayer"
 run/main_scene="res://main.tscn"
 config/icon="res://icon.png"
 
+[autoload]
+
+fluidsynth="*res://fluidsynth.tscn"
+midi_io="*res://MidiIO.cs"
+
+[display]
+
+window/size/width=1920
+window/size/height=1080
+
 [editor_plugins]
 
 enabled=PoolStringArray( "midi" )
 
 [rendering]
 
+quality/2d/use_pixel_snap=true
 environment/default_environment="res://default_env.tres"
