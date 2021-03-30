@@ -10,35 +10,45 @@ public class main : Node2D
 		midi_io = (MidiIO) GetNode("/root/midi_io");
 	}
 
-	private void _on_Button_pressed()
+	public void _on_CheckButton_toggled(bool button_pressed)
 	{
-
-	}
-	
-	private void _on_Button_button_down()
-	{
-		midi_io.NoteOn(1, 60, 90);
-	}
-	
-	private void _on_Button2_button_down()
-	{
-		midi_io.NoteOff(1, 60);
+		if (button_pressed)
+		{
+			midi_io.NoteOn(1, 60, 90);
+		}
+		else
+		{
+			midi_io.NoteOff(1, 60);
+		}
 	}
 
-
-	private void _on_Button3_button_down()
+	public void _on_CheckButton2_toggled(bool button_pressed)
 	{
-		midi_io.ProgramSelect(1, 0, 20);
+		if (button_pressed)
+		{
+			midi_io.NoteOn(1, 64, 90);
+		}
+		else
+		{
+			midi_io.NoteOff(1, 64);
+		}
 	}
+
+	public void _on_CheckButton3_toggled(bool button_pressed)
+	{
+		if (button_pressed)
+		{
+			midi_io.NoteOn(3, 67, 90);
+		}
+		else
+		{
+			midi_io.NoteOff(3, 67);
+		}
+	}
+
+	public void _on_VSlider_value_changed(float value)
+	{
+		midi_io.SendControlChannel("cutoff", value);
+	}
+
 }
-
-
-
-
-
-
-
-
-
-
-
