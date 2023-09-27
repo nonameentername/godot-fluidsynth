@@ -1,6 +1,6 @@
 *.os
 *.so
-.import
+.godot
 .sconsign.dblite
 .mono
 bin/x11/

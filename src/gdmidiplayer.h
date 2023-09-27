@@ -1,28 +1,29 @@
 #ifndef GDMIDIPLAYER_H
 #define GDMIDIPLAYER_H
 
-#include <Godot.hpp>
-#include <AudioStream.hpp>
-#include <AudioStreamPlayer.hpp>
-#include <AudioStreamGeneratorPlayback.hpp>
-#include <ProjectSettings.hpp>
-#include <ResourceLoader.hpp>
-#include <Resource.hpp>
-#include <File.hpp>
 #include <fluidsynth.h>
+
+#include <godot_cpp/classes/audio_stream.hpp>
+#include <godot_cpp/classes/audio_stream_generator_playback.hpp>
+#include <godot_cpp/classes/audio_stream_player.hpp>
+#include <godot_cpp/classes/project_settings.hpp>
+#include <godot_cpp/classes/resource.hpp>
+#include <godot_cpp/classes/resource_loader.hpp>
+#include <godot_cpp/core/class_db.hpp>
+#include <godot_cpp/godot.hpp>
+
 #include "midi_file_reader.h"
 #include "soundfont_file_reader.h"
-
 
 namespace godot {
 
 class GDMidiAudioStreamPlayer : public AudioStreamPlayer {
-    GODOT_CLASS(GDMidiAudioStreamPlayer, AudioStreamPlayer)
+    GDCLASS(GDMidiAudioStreamPlayer, AudioStreamPlayer)
 
-private:
+  private:
     String soundfont;
     String midi_file;
-    float* buffer;
+    float *buffer;
     bool fluidsynth_playing;
     int sfont_id;
 
@@ -34,13 +35,13 @@ private:
 
     void fill_buffer();
 
-public:
-    static void _register_methods();
+  public:
+    static void _bind_methods();
 
     GDMidiAudioStreamPlayer();
     ~GDMidiAudioStreamPlayer();
 
-    void _init(); // our initializer called by Godot
+    void _ready();  // our initializer called by Godot
 
     void _process(float delta);
     void set_soundfont(String p_soundfont);
@@ -54,10 +55,10 @@ public:
     void program_select(int chan, int bank_num, int preset_num);
     void note_on(int chan, int key, int vel);
     void note_off(int chan, int key);
-    void pitch_bend(int chan, int val); //val value (0-16383 with 8192 being center)
-
+    // val value (0-16383 with 8192 being center)
+    void pitch_bend(int chan, int val);
 };
 
-}
+}  // namespace godot
 
 #endif

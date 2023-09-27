@@ -1,32 +1,31 @@
-tool
+@tool
 class_name MidiDataLoader
 extends ResourceFormatLoader
 
-const MidiFileReader = preload("res://bin/midi_file_reader.gdns")
 
-func get_recognized_extensions():
-    return PoolStringArray(["midstr"])
+func _get_recognized_extensions():
+	return PackedStringArray(["midstr"])
 
 
-func get_resource_type(path):
-    var ext = path.get_extension().to_lower()
-    if ext == "midstr":
-        return "MidiFileReader"
-    return ""
+func _get_resource_type(path):
+	var ext = path.get_extension().to_lower()
+	if ext == "midstr":
+		return "MidiFileReader"
+	return ""
 
-func handles_type(typename):
-    return typename == "MidiFileReader"
 
-func load(path, original_path):
-    var f = File.new()
+func _handles_type(typename):
+	return typename == "MidiFileReader"
 
-    var err = f.open(path, File.READ)
-    if err != OK:
-        return err
 
-    var res = MidiFileReader.new()
-    var data = f.get_buffer(f.get_len())
-    res.set_data(data)
-    f.close()
+func _load(path, original_path, use_sub_threads, cache_mode):
+	var f = FileAccess.open(path, FileAccess.READ)
+	if f == null:
+		return FileAccess.get_open_error()
 
-    return res
+	var res = MidiFileReader.new()
+	var data = f.get_buffer(f.get_length())
+	res.set_data(data)
+	f.close()
+
+	return res
