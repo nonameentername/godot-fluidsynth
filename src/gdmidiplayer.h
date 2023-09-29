@@ -21,11 +21,11 @@ class GDMidiAudioStreamPlayer : public AudioStreamPlayer {
     GDCLASS(GDMidiAudioStreamPlayer, AudioStreamPlayer)
 
   private:
-    String soundfont;
-    String midi_file;
+    Ref<SoundFontFileReader> soundfont;
+    Ref<MidiFileReader> midi_file;
     float *buffer;
-    bool fluidsynth_playing;
-    int sfont_id;
+    int sfont_id = -1;
+    bool in_editor;
 
     fluid_settings_t *settings;
     fluid_synth_t *synth;
@@ -42,13 +42,15 @@ class GDMidiAudioStreamPlayer : public AudioStreamPlayer {
     ~GDMidiAudioStreamPlayer();
 
     void _ready();  // our initializer called by Godot
-
     void _process(float delta);
-    void set_soundfont(String p_soundfont);
-    String get_soundfont();
+    //void _notification(int p_what);
+    bool _set(const String property, const Variant value);
 
-    void set_midi_file(String p_midi_file);
-    String get_midi_file();
+    void set_soundfont(Ref<SoundFontFileReader> p_soundfont);
+    Ref<SoundFontFileReader> get_soundfont();
+
+    void set_midi_file(Ref<MidiFileReader> p_midi_file);
+    Ref<MidiFileReader> get_midi_file();
 
     void fluidsynth_play();
 

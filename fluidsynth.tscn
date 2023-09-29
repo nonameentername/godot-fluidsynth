@@ -1,9 +1,13 @@
-[gd_scene load_steps=2 format=3 uid="uid://dwlfo63f7udh2"]
+[gd_scene load_steps=4 format=3 uid="uid://dwlfo63f7udh2"]
+
+[ext_resource type="MidiFileReader" uid="uid://bcfsoo3bbifnj" path="res://assets/example.mid" id="1_7p2ig"]
+[ext_resource type="SoundFontFileReader" uid="uid://bnijkstv1hhr7" path="res://assets/example.sf2" id="1_gftlm"]
 
 [sub_resource type="AudioStreamGenerator" id="1"]
 buffer_length = 0.05
 
 [node name="main" type="GDMidiAudioStreamPlayer"]
-soundfont = "res://assets/example.sf2"
+soundfont = ExtResource("1_gftlm")
+midi_file = ExtResource("1_7p2ig")
 stream = SubResource("1")
 autoplay = true

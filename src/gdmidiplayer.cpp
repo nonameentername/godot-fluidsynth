@@ -1,6 +1,7 @@
 #include "gdmidiplayer.h"
 
 #include <godot_cpp/variant/utility_functions.hpp>
+#include <godot_cpp/classes/engine.hpp>
 
 using namespace godot;
 
@@ -60,76 +61,114 @@ void GDMidiAudioStreamPlayer::_bind_methods() {
                          &GDMidiAudioStreamPlayer::set_soundfont);
     ClassDB::bind_method(D_METHOD("get_soundfont"),
                          &GDMidiAudioStreamPlayer::get_soundfont);
-    ClassDB::bind_method(D_METHOD("set_midi_file", "midi_file"),
-                         &GDMidiAudioStreamPlayer::set_midi_file);
-    ClassDB::bind_method(D_METHOD("get_midi_file"),
-                         &GDMidiAudioStreamPlayer::get_midi_file);
 
-    ClassDB::add_property("GDMidiAudioStreamPlayer",
-                          PropertyInfo(Variant::STRING, "soundfont"),
-                          "set_soundfont", "get_soundfont");
-    ClassDB::add_property(
-        "GDMidiAudioStreamPlayer",
-        PropertyInfo(Variant::STRING, "midi_file", PROPERTY_HINT_RESOURCE_TYPE),
-        "set_midi_file", "get_midi_file");
+    ClassDB::bind_method(D_METHOD("set_midi_file", "midi_file"), &GDMidiAudioStreamPlayer::set_midi_file);
+
+    ClassDB::bind_method(D_METHOD("get_midi_file"), &GDMidiAudioStreamPlayer::get_midi_file);
+
+    ClassDB::add_property("GDMidiAudioStreamPlayer", PropertyInfo(Variant::OBJECT, "soundfont", PROPERTY_HINT_RESOURCE_TYPE, "SoundFontFileReader"), "set_soundfont", "get_soundfont");
+
+    ClassDB::add_property( "GDMidiAudioStreamPlayer", PropertyInfo(Variant::OBJECT, "midi_file", PROPERTY_HINT_RESOURCE_TYPE, "MidiFileReader"), "set_midi_file", "get_midi_file");
 }
 
 GDMidiAudioStreamPlayer::GDMidiAudioStreamPlayer() {
-    settings = new_fluid_settings();
+    in_editor = godot::Engine::get_singleton()->is_editor_hint();
 
-    // fluid_settings_setstr(settings, "audio.driver", "pulseaudio");
-    synth = new_fluid_synth(settings);
-    player = new_fluid_player(synth);
-    fluid_sfloader_t *my_sfloader = new_fluid_defsfloader(settings);
-    fluid_sfloader_set_callbacks(my_sfloader, my_open, my_read, my_seek,
-                                 my_tell, my_close);
-    fluid_synth_add_sfloader(synth, my_sfloader);
+    if(in_editor) {
+        set_process_mode(Node::ProcessMode::PROCESS_MODE_DISABLED);
+    } else {
+        godot::UtilityFunctions::print("creating GDMidiAudioStreamPlayer");
+        buffer = new float[44100 * 2];
+        settings = new_fluid_settings();
+
+        // fluid_settings_setstr(settings, "audio.driver", "pulseaudio");
+        synth = new_fluid_synth(settings);
+        player = new_fluid_player(synth);
+        fluid_player_set_loop(player, -1);
+        fluid_sfloader_t *my_sfloader = new_fluid_defsfloader(settings);
+        fluid_sfloader_set_callbacks(my_sfloader, my_open, my_read, my_seek,
+                                     my_tell, my_close);
+        fluid_synth_add_sfloader(synth, my_sfloader);
+        fluid_synth_system_reset(synth);
+    }
 }
 
 GDMidiAudioStreamPlayer::~GDMidiAudioStreamPlayer() {
-    // delete buffer;
-    delete_fluid_player(player);
-    delete_fluid_synth(synth);
-    delete_fluid_settings(settings);
+    if(!in_editor) {
+        godot::UtilityFunctions::print("deleting GDMidiAudioStreamPlayer");
+        delete buffer;
+        delete_fluid_player(player);
+        delete_fluid_synth(synth);
+        delete_fluid_settings(settings);
+    }
 }
 
 void GDMidiAudioStreamPlayer::_ready() {
-    buffer = new float[44100 * 2];
-    fluidsynth_playing = false;
-    if (stream_playback == NULL) {
+    godot::UtilityFunctions::print("_ready");
+
+    if (!in_editor) {
+        play();
         stream_playback = get_stream_playback();
+        fill_buffer();
     }
 }
 
 void GDMidiAudioStreamPlayer::_process(float delta) {
-    // godot::UtilityFunctions::print("_process");
-
-    if (fluid_player_get_status(player) == FLUID_PLAYER_DONE &&
-        fluidsynth_playing) {
-        fluid_player_stop(player);
-        fluid_player_join(player);
-        delete_fluid_player(player);
-        fluidsynth_playing = false;
-
-        player = new_fluid_player(synth);
-    }
-
-    if (is_playing() && !fluidsynth_playing) {
-        fluidsynth_play();
-    }
-
+    //godot::UtilityFunctions::print("_process");
     fill_buffer();
 }
 
+//void GDMidiAudioStreamPlayer::_notification(int p_what) {
+//
+//    AudioStreamPlayer::_notification(p_what);
+//
+//	switch (p_what) {
+//		case NOTIFICATION_READY: {
+//			set_process_internal(true);
+//		}
+//		case NOTIFICATION_INTERNAL_PROCESS: {
+//            /*
+//            fluid_player_play(player);
+//            if (fluid_player_get_status(player) == FLUID_PLAYER_READY) {
+//            }
+//
+//            if (fluid_player_get_status(player) == FLUID_PLAYER_DONE) {
+//                fluid_player_stop(player);
+//                fluid_player_join(player);
+//                fluid_player_seek(player, 0);
+//                fluid_player_play(player);
+//            }
+//            */
+//			break;
+//		}
+//        //default:
+//        //    godot::UtilityFunctions::print("_notification", p_what);
+//	}
+//}
+
+bool GDMidiAudioStreamPlayer::_set(const String property, const Variant value) {
+    godot::UtilityFunctions::print("property: ", property, " value: ", value);
+    return AudioStreamPlayer::_set(property, value);
+}
+
+
 void GDMidiAudioStreamPlayer::fill_buffer() {
+	if (!is_playing()) {
+		return;
+	}
+
+
     if (stream_playback == NULL) {
-        return;
+		return;
     }
-    int64_t to_fill = stream_playback->get_frames_available();
-    if (to_fill > 44100) {
-        to_fill = 44100;
-    }
+
+	int64_t to_fill = stream_playback->get_frames_available();
+	if (to_fill > 44100) {
+		to_fill = 44100;
+	}
+
     fluid_synth_write_float(synth, to_fill, buffer, 0, 2, buffer, 1, 2);
+
     int index = 0;
     while (to_fill > 0) {
         stream_playback->push_frame(Vector2(buffer[index], buffer[index + 1]));
@@ -138,34 +177,30 @@ void GDMidiAudioStreamPlayer::fill_buffer() {
     }
 }
 
-void GDMidiAudioStreamPlayer::set_soundfont(String p_soundfont) {
+void GDMidiAudioStreamPlayer::set_soundfont(Ref<SoundFontFileReader> p_soundfont) {
     soundfont = p_soundfont;
 
-    if (ResourceLoader::get_singleton()->exists(soundfont)) {
-        Variant resource = ResourceLoader::get_singleton()->load(soundfont);
-        Ref<SoundFontFileReader> soundfont_file = resource;
+    godot::UtilityFunctions::print("before sfont_id: ", sfont_id);
+
+    if (soundfont != NULL) {
         char abused_filename[64];
-        const void *pointer_to_sf2_in_mem = soundfont_file->get_array_data();
+        const void *pointer_to_sf2_in_mem = soundfont->get_array_data();
         sprintf(abused_filename, "&%p", pointer_to_sf2_in_mem);
-        fsize = soundfont_file->get_array_size();
-        sfont_id = fluid_synth_sfload(synth, abused_filename, 1);
+        fsize = soundfont->get_array_size();
+        if(!in_editor) {
+            sfont_id = fluid_synth_sfload(synth, abused_filename, 1);
+            godot::UtilityFunctions::print("after sfont_id: ", sfont_id);
+        }
     }
 }
 
-String GDMidiAudioStreamPlayer::get_soundfont() { return soundfont; }
+Ref<SoundFontFileReader> GDMidiAudioStreamPlayer::get_soundfont() { return soundfont; }
 
-void GDMidiAudioStreamPlayer::set_midi_file(String p_midi_file) {
+void GDMidiAudioStreamPlayer::set_midi_file(Ref<MidiFileReader> p_midi_file) {
     midi_file = p_midi_file;
-}
 
-String GDMidiAudioStreamPlayer::get_midi_file() { return midi_file; }
-
-void GDMidiAudioStreamPlayer::fluidsynth_play() {
-    if (ResourceLoader::get_singleton()->exists(midi_file)) {
-        Variant resource = ResourceLoader::get_singleton()->load(midi_file);
-
-        Ref<MidiFileReader> midi = resource;
-        PackedByteArray byte_array = midi->get_data();
+    if (midi_file != NULL) {
+        PackedByteArray byte_array = midi_file->get_data();
 
         if (byte_array.size() > 0) {
             char midi_file[byte_array.size()];
@@ -174,12 +209,16 @@ void GDMidiAudioStreamPlayer::fluidsynth_play() {
                 midi_file[i] = byte_array[i];
             }
 
-            fluid_player_add_mem(player, midi_file, byte_array.size());
+            if(!in_editor) {
+                fluid_player_add_mem(player, midi_file, byte_array.size());
+            }
         }
-
-        fluid_player_play(player);
-        fluidsynth_playing = true;
     }
+}
+
+Ref<MidiFileReader> GDMidiAudioStreamPlayer::get_midi_file() { return midi_file; }
+
+void GDMidiAudioStreamPlayer::fluidsynth_play() {
 }
 
 void GDMidiAudioStreamPlayer::program_select(int chan, int bank_num,

@@ -1,6 +1,10 @@
-[gd_scene load_steps=2 format=3 uid="uid://n6csjkhxjfm2"]
+[gd_scene load_steps=4 format=3 uid="uid://n6csjkhxjfm2"]
 
 [ext_resource type="Script" path="res://main.cs" id="1"]
+[ext_resource type="PackedScene" uid="uid://dwlfo63f7udh2" path="res://fluidsynth.tscn" id="2_i1m8a"]
+
+[sub_resource type="AudioStreamGenerator" id="AudioStreamGenerator_xj3rg"]
+buffer_length = 0.05
 
 [node name="main" type="Node2D"]
 script = ExtResource("1")
@@ -51,7 +55,11 @@ offset_right = 413.0
 offset_bottom = 241.0
 max_value = 3000.0
 
+[node name="fluidsynth" parent="." instance=ExtResource("2_i1m8a")]
+stream = SubResource("AudioStreamGenerator_xj3rg")
+
 [connection signal="toggled" from="CheckButton" to="." method="_on_CheckButton_toggled"]
 [connection signal="toggled" from="CheckButton2" to="." method="_on_CheckButton2_toggled"]
 [connection signal="toggled" from="CheckButton3" to="." method="_on_CheckButton3_toggled"]
 [connection signal="value_changed" from="VSlider" to="." method="_on_VSlider_value_changed"]
+[connection signal="ready" from="fluidsynth" to="." method="_on_fluidsynth_ready"]
