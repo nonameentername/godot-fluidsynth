@@ -5,58 +5,17 @@
 
 using namespace godot;
 
-int position = 0;
-long fsize = 0;
-
-void *my_open(const char *filename) {
-    void *p;
-    if (filename[0] != '&') {
-        return NULL;
-    }
-    sscanf(filename, "&%p", &p);
-    return p;
-}
-
-int my_read(void *buf, long long count, void *handle) {
-    memcpy(buf, (handle + position), count);
-    position = position + count;
-
-    return FLUID_OK;
-}
-
-int my_seek(void *handle, long long offset, int origin) {
-    switch (origin) {
-        case SEEK_SET:
-            position = offset;
-            break;
-        case SEEK_CUR:
-            position = position + offset;
-            break;
-        default:
-            position = fsize + offset;
-            break;
-    }
-
-    if (position < 0 || position > fsize) {
-        return FLUID_FAILED;
-    }
-
-    return FLUID_OK;
-}
-
-int my_close(void *handle) { return FLUID_OK; }
-
-long long my_tell(void *handle) { return position; }
-
 GDFluidSynth::GDFluidSynth() {
     godot::UtilityFunctions::print("creating GDFluidSynth");
     buffer = new float[44100 * 2];
     settings = new_fluid_settings();
     synth = new_fluid_synth(settings);
-    fluid_sfloader_t *my_sfloader = new_fluid_defsfloader(settings);
-    fluid_sfloader_set_callbacks(my_sfloader, my_open, my_read, my_seek,
-                                 my_tell, my_close);
-    fluid_synth_add_sfloader(synth, my_sfloader);
+    fluid_sfloader_t *sfloader = new_fluid_defsfloader(settings);
+    fluid_sfloader_set_callbacks(
+        sfloader, SoundFontFileReader::sf_open, SoundFontFileReader::sf_read,
+        SoundFontFileReader::sf_seek, SoundFontFileReader::sf_tell,
+        SoundFontFileReader::sf_close);
+    fluid_synth_add_sfloader(synth, sfloader);
     godot::UtilityFunctions::print("done creating GDFluidSynth");
 }
 
@@ -86,7 +45,7 @@ void GDFluidSynth::fill_buffer() {
     if (stream_playback == NULL) {
         return;
     }
-    godot::UtilityFunctions::print("GDFluidSynth::fill_buffer");
+    // godot::UtilityFunctions::print("GDFluidSynth::fill_buffer");
 
     int64_t to_fill = stream_playback->get_frames_available();
     if (to_fill > 44100) {
@@ -125,10 +84,8 @@ void GDFluidSynth::set_soundfont(Ref<SoundFontFileReader> p_soundfont) {
 
     if (soundfont != NULL) {
         char abused_filename[64];
-        const void *pointer_to_sf2_in_mem = soundfont->get_array_data();
+        const void *pointer_to_sf2_in_mem = static_cast<void *>(&soundfont);
         sprintf(abused_filename, "&%p", pointer_to_sf2_in_mem);
-        position = 0;
-        fsize = soundfont->get_array_size();
         sfont_id = fluid_synth_sfload(synth, abused_filename, 1);
         godot::UtilityFunctions::print("after sfont_id: ", sfont_id);
     }
