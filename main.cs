@@ -4,8 +4,9 @@ using System;
 public partial class main : Node2D
 {
     private MidiIO midi_io;
+
     [Export]
-    private AudioStreamPlayer fluidsynth;
+    private Node fluidsynth;
 
     public override void _Ready()
     {

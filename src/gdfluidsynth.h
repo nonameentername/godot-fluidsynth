@@ -1,5 +1,5 @@
-#ifndef GDMIDIPLAYER_H
-#define GDMIDIPLAYER_H
+#ifndef GDFLUIDSYNTH_H
+#define GDFLUIDSYNTH_H
 
 #include <fluidsynth.h>
 
@@ -12,48 +12,42 @@
 #include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/godot.hpp>
 
-#include "gdfluidsynth.h"
-#include "midi_file_reader.h"
 #include "soundfont_file_reader.h"
 
 namespace godot {
 
-class GDMidiAudioStreamPlayer : public AudioStreamPlayer {
-    GDCLASS(GDMidiAudioStreamPlayer, AudioStreamPlayer)
+class GDFluidSynth : public Node {
+    GDCLASS(GDFluidSynth, Node)
 
   private:
-    Ref<SoundFontFileReader> soundfont;
-    Ref<MidiFileReader> midi_file;
-    float *buffer;
-    int sfont_id = -1;
-    bool in_editor;
-
     fluid_settings_t *settings;
     fluid_synth_t *synth;
-    fluid_player_t *player;
-    fluid_audio_driver_t *adriver;
+    float *buffer;
+    int sfont_id;
+
+    Ref<SoundFontFileReader> soundfont;
+    AudioStreamPlayer *stream_player = NULL;
     Ref<AudioStreamGeneratorPlayback> stream_playback;
 
     void fill_buffer();
 
+  protected:
+    void _notification(int p_what);
+
   public:
     static void _bind_methods();
 
-    GDMidiAudioStreamPlayer();
-    ~GDMidiAudioStreamPlayer();
+    GDFluidSynth();
+    ~GDFluidSynth();
 
-    void _ready();  // our initializer called by Godot
-    void _process(float delta);
-    // void _notification(int p_what);
-    bool _set(const String property, const Variant value);
+    void _ready();
+    void _process(double delta);
+
+    void set_player(AudioStreamPlayer *p_player);
+    AudioStreamPlayer *get_player();
 
     void set_soundfont(Ref<SoundFontFileReader> p_soundfont);
     Ref<SoundFontFileReader> get_soundfont();
-
-    void set_midi_file(Ref<MidiFileReader> p_midi_file);
-    Ref<MidiFileReader> get_midi_file();
-
-    void fluidsynth_play();
 
     void program_select(int chan, int bank_num, int preset_num);
     void note_on(int chan, int key, int vel);
@@ -61,7 +55,6 @@ class GDMidiAudioStreamPlayer : public AudioStreamPlayer {
     // val value (0-16383 with 8192 being center)
     void pitch_bend(int chan, int val);
 };
-
 }  // namespace godot
 
 #endif
