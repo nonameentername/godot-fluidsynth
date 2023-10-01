@@ -23,7 +23,7 @@
       "command": "make",
       "type": "process",
       "args": [
-        "all"
+        "dev-build"
       ],
       "problemMatcher": "$gcc",
       "presentation": {

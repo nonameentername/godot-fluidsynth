@@ -1,18 +1,18 @@
-#ifndef AUDIOSTREAMPLAYERMYTONE_H
-#define AUDIOSTREAMPLAYERMYTONE_H
+#ifndef AUDIOSTREAMPLAYERFLUIDSYNTH_H
+#define AUDIOSTREAMPLAYERFLUIDSYNTH_H
 
 #include <godot_cpp/classes/audio_frame.hpp>
 #include <godot_cpp/classes/audio_server.hpp>
 #include <godot_cpp/classes/audio_stream.hpp>
 #include <godot_cpp/classes/audio_stream_playback.hpp>
 #include <godot_cpp/godot.hpp>
-#include "audiostream_mytone.h"
+#include "audio_stream_fluidsynth.h"
 
 namespace godot {
 
-class AudioStreamPlaybackMyTone : public AudioStreamPlayback {
-    GDCLASS(AudioStreamPlaybackMyTone, AudioStreamPlayback)
-    friend class AudioStreamMyTone;
+class AudioStreamPlaybackFluidSynth : public AudioStreamPlayback {
+    GDCLASS(AudioStreamPlaybackFluidSynth, AudioStreamPlayback)
+    friend class AudioStreamFluidSynth;
 
   private:
     enum { PCM_BUFFER_SIZE = 4096 };
@@ -21,7 +21,7 @@ class AudioStreamPlaybackMyTone : public AudioStreamPlayback {
         MIX_FRAC_LEN = (1 << MIX_FRAC_BITS),
         MIX_FRAC_MASK = MIX_FRAC_LEN - 1,
     };
-    Ref<AudioStreamMyTone> base;
+    Ref<AudioStreamFluidSynth> base;
     bool active;
     float mixed;
 
@@ -31,13 +31,13 @@ class AudioStreamPlaybackMyTone : public AudioStreamPlayback {
     virtual void _start(float p_from_pos = 0.0);
     virtual void _stop();
     virtual bool _is_playing() const;
-    virtual int _get_loop_count() const;  // times it looped
+    virtual int _get_loop_count() const;
     virtual double _get_playback_position() const;
     virtual void _seek(float p_time);
     virtual int _mix(AudioFrame *p_buffer, float p_rate_scale, int p_frames);
-    virtual float _get_length() const;  // if supported, otherwise return 0
-    AudioStreamPlaybackMyTone();
-    ~AudioStreamPlaybackMyTone();
+    virtual float _get_length() const;
+    AudioStreamPlaybackFluidSynth();
+    ~AudioStreamPlaybackFluidSynth();
 };
 }  // namespace godot
 
