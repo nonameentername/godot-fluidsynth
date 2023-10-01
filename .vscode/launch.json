@@ -15,6 +15,29 @@
       "cwd": "${workspaceFolder}",
       "stopAtEntry": false,
     },
+    // For these launch configurations to work, you need to setup a GODOT4
+    // environment variable. On mac or linux, this can be done by adding
+    // the following to your .zshrc, .bashrc, or .bash_profile file:
+    // export GODOT4="/Applications/Godot.app/Contents/MacOS/Godot"
+    {
+      "name": "🕹 Native Debug Game",
+      "type": "cppdbg",
+      "request": "launch",
+      "preLaunchTask": "build",
+      "program": "${env:GODOT4}",
+      "additionalSOLibSearchPath": "bin",
+      "args": ["--editor"],
+      //"args": [],
+      "cwd": "${workspaceFolder}",
+      "stopAtEntry": false,
+      "environment" : [
+          {
+              "name": "LD_PRELOAD",
+              "value": "${workspaceFolder}/bin/libgdmidiplayer.linux.template_debug.dev.x86_64.so"
+          }
+      ]
+    },
+
     // Debug the scene that matches the name of the currently open *.cs file
     // (if there's a scene with the same name in the same directory).
     {

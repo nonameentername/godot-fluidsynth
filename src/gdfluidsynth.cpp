@@ -6,60 +6,109 @@
 using namespace godot;
 
 GDFluidSynth::GDFluidSynth() {
-    godot::UtilityFunctions::print("creating GDFluidSynth");
-    buffer = new float[44100 * 2];
-    settings = new_fluid_settings();
-    synth = new_fluid_synth(settings);
-    fluid_sfloader_t *sfloader = new_fluid_defsfloader(settings);
-    fluid_sfloader_set_callbacks(
-        sfloader, SoundFontFileReader::sf_open, SoundFontFileReader::sf_read,
-        SoundFontFileReader::sf_seek, SoundFontFileReader::sf_tell,
-        SoundFontFileReader::sf_close);
-    fluid_synth_add_sfloader(synth, sfloader);
-    godot::UtilityFunctions::print("done creating GDFluidSynth");
+    in_editor = godot::Engine::get_singleton()->is_editor_hint();
+
+    if (in_editor) {
+        return;
+    }
+
+    /*
+        godot::UtilityFunctions::print("creating GDFluidSynth");
+        settings = new_fluid_settings();
+        synth = new_fluid_synth(settings);
+        fluid_sfloader_t *sfloader = new_fluid_defsfloader(settings);
+        fluid_sfloader_set_callbacks(
+            sfloader, SoundFontFileReader::sf_open,
+       SoundFontFileReader::sf_read, SoundFontFileReader::sf_seek,
+       SoundFontFileReader::sf_tell, SoundFontFileReader::sf_close);
+        fluid_synth_add_sfloader(synth, sfloader);
+        godot::UtilityFunctions::print("done creating GDFluidSynth");
+        */
 }
 
 GDFluidSynth::~GDFluidSynth() {
+    if (in_editor) {
+        return;
+    }
     godot::UtilityFunctions::print("deleting GDFluidSynth");
-    delete buffer;
+    /*
     delete_fluid_synth(synth);
     delete_fluid_settings(settings);
+    */
 }
 
 void GDFluidSynth::_ready() {
+    if (in_editor) {
+        return;
+    }
+
     godot::UtilityFunctions::print("_ready");
-    stream_player->play();
+
+    if (stream_player != NULL && !stream_player->is_playing()) {
+        stream_player->play();
+    }
+
     stream_playback = stream_player->get_stream_playback();
-    fill_buffer();
 }
 
 void GDFluidSynth::_process(double delta) {
+    if (in_editor) {
+        return;
+    }
+
     // godot::UtilityFunctions::print("GDFluidSynth::_process");
     if (stream_player != NULL) {
         // godot::UtilityFunctions::print(stream_player->get_name());
     }
+
+    /*
+    if (stream_player != NULL && !stream_player->is_playing()) {
+        stream_player->play();
+        stream_playback = stream_player->get_stream_playback();
+        godot::UtilityFunctions::print("setting stream_playback");
+    }
+    */
+
     fill_buffer();
 }
 
 void GDFluidSynth::fill_buffer() {
+    stream_playback = stream_player->get_stream_playback();
     if (stream_playback == NULL) {
         return;
     }
-    // godot::UtilityFunctions::print("GDFluidSynth::fill_buffer");
+
+    // godot::UtilityFunctions::print("steam_playback ", stream_playback);
+
+    // temp
+    int64_t to_fill2 = stream_playback->get_frames_available();
+    // godot::UtilityFunctions::print("to_fill2 ", to_fill2);
+
+    while (to_fill2 > 0) {
+        Vector2 vector = Vector2(1, 1);
+        stream_playback->push_frame(vector * sin(phase * Math_TAU));
+        float sample_hz = 22050;
+        float pulse_hz = 440;
+        float increment = pulse_hz / sample_hz;
+        phase = fmod(phase + increment, 1);
+        to_fill2 -= 1;
+    }
+
+    return;
+    // endtemp
 
     int64_t to_fill = stream_playback->get_frames_available();
     if (to_fill > 44100) {
         to_fill = 44100;
     }
+    // godot::UtilityFunctions::print("to_fill ", to_fill);
 
-    fluid_synth_write_float(synth, to_fill, buffer, 0, 2, buffer, 1, 2);
+    PackedVector2Array buffer;
+    buffer.resize(to_fill);
+    Vector2 *data = buffer.ptrw();
+    fluid_synth_write_float(synth, to_fill, data, 0, 2, data, 1, 2);
 
-    int index = 0;
-    while (to_fill > 0) {
-        stream_playback->push_frame(Vector2(buffer[index], buffer[index + 1]));
-        index = index + 2;
-        to_fill = to_fill - 1;
-    }
+    stream_playback->push_buffer(buffer);
 }
 
 void GDFluidSynth::_notification(int p_what) {
@@ -82,6 +131,11 @@ void GDFluidSynth::set_soundfont(Ref<SoundFontFileReader> p_soundfont) {
 
     godot::UtilityFunctions::print("before sfont_id: ", sfont_id);
 
+    if (in_editor) {
+        return;
+    }
+
+    /*
     if (soundfont != NULL) {
         char abused_filename[64];
         const void *pointer_to_sf2_in_mem = static_cast<void *>(&soundfont);
@@ -89,24 +143,25 @@ void GDFluidSynth::set_soundfont(Ref<SoundFontFileReader> p_soundfont) {
         sfont_id = fluid_synth_sfload(synth, abused_filename, 1);
         godot::UtilityFunctions::print("after sfont_id: ", sfont_id);
     }
+    */
 }
 
 Ref<SoundFontFileReader> GDFluidSynth::get_soundfont() { return soundfont; }
 
 void GDFluidSynth::program_select(int chan, int bank_num, int preset_num) {
-    fluid_synth_program_select(synth, chan, sfont_id, bank_num, preset_num);
+    // fluid_synth_program_select(synth, chan, sfont_id, bank_num, preset_num);
 }
 
 void GDFluidSynth::note_on(int chan, int key, int vel) {
-    fluid_synth_noteon(synth, chan, key, vel);
+    // fluid_synth_noteon(synth, chan, key, vel);
 }
 
 void GDFluidSynth::note_off(int chan, int key) {
-    fluid_synth_noteoff(synth, chan, key);
+    // fluid_synth_noteoff(synth, chan, key);
 }
 
 void GDFluidSynth::pitch_bend(int chan, int val) {
-    fluid_synth_pitch_bend(synth, chan, val);
+    // fluid_synth_pitch_bend(synth, chan, val);
 }
 
 void GDFluidSynth::_bind_methods() {

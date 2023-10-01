@@ -8,13 +8,18 @@ public partial class main : Node2D
     [Export]
     private Node fluidsynth;
 
+    private AudioStreamPlayer streamPlayer;
+
     public override void _Ready()
     {
-        fluidsynth.Call("note_on", 1, 60, 90);
+        //streamPlayer = (AudioStreamPlayer)GetNode("StreamPlayer");
+        //streamPlayer.Play();
+        //fluidsynth.Call("note_on", 1, 60, 90);
     }
 
     public void _on_fluidsynth_ready()
     {
+        GD.Print("fluidsynth _ready");
     }
 
     public override void _Process(double delta)

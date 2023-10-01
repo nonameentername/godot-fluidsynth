@@ -2,13 +2,30 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "build",
+      "label": "dotnet-build",
       "command": "dotnet",
       "type": "process",
       "args": [
-        "build",
+        "build"
       ],
       "problemMatcher": "$msCompile",
+      "presentation": {
+        "echo": true,
+        "reveal": "silent",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": false
+      }
+    },
+    {
+      "label": "make-build",
+      "command": "make",
+      "type": "process",
+      "args": [
+        "all"
+      ],
+      "problemMatcher": "$gcc",
       "presentation": {
         "echo": true,
         "reveal": "silent",
@@ -33,7 +50,7 @@
         "panel": "shared",
         "showReuseMessage": false,
         "clear": true
-      },
+      }
     },
     {
       "label": "build-solutions",
@@ -52,5 +69,12 @@
         "clear": false
       }
     },
+    {
+      "label": "build",
+      "dependsOn": [
+        "make-build",
+        "dotnet-build"
+      ]
+    }
   ]
 }

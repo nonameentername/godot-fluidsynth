@@ -19,6 +19,8 @@ void initialize_gdmidiplayer_module(ModuleInitializationLevel p_level) {
     ClassDB::register_class<SoundFontFileReader>();
     ClassDB::register_class<GDMidiAudioStreamPlayer>();
     ClassDB::register_class<GDFluidSynth>();
+    ClassDB::register_class<AudioStreamPlaybackMyTone>();
+    ClassDB::register_class<AudioStreamMyTone>();
 }
 
 void uninitialize_gdmidiplayer_module(ModuleInitializationLevel p_level) {

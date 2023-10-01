@@ -22,8 +22,9 @@ class GDFluidSynth : public Node {
   private:
     fluid_settings_t *settings;
     fluid_synth_t *synth;
-    float *buffer;
     int sfont_id;
+    bool in_editor;
+    float phase = 0;
 
     Ref<SoundFontFileReader> soundfont;
     AudioStreamPlayer *stream_player = NULL;

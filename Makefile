@@ -8,7 +8,10 @@ PLATFORM=osx
 endif
 
 all:
-	scons platform=$(PLATFORM) bits=64
+	scons platform=$(PLATFORM)
+
+dev-build:
+	scons platform=$(PLATFORM) dev_build=yes debug_symbols=yes
 
 godot-cpp:
 	(cd godot-cpp && scons platform=$(PLATFORM) bits=64 generate_bindings=yes)
