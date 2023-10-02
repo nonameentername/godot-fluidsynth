@@ -12,6 +12,7 @@
 #include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/godot.hpp>
 
+#include "fluidsynth_gdextension.h"
 #include "soundfont_file_reader.h"
 
 namespace godot {
@@ -20,17 +21,7 @@ class GDFluidSynth : public Node {
     GDCLASS(GDFluidSynth, Node)
 
   private:
-    fluid_settings_t *settings;
-    fluid_synth_t *synth;
-    int sfont_id;
-    bool in_editor;
-    float phase = 0;
-
     Ref<SoundFontFileReader> soundfont;
-    AudioStreamPlayer *stream_player = NULL;
-    Ref<AudioStreamGeneratorPlayback> stream_playback;
-
-    void fill_buffer();
 
   protected:
     void _notification(int p_what);
@@ -44,17 +35,8 @@ class GDFluidSynth : public Node {
     void _ready();
     void _process(double delta);
 
-    void set_player(AudioStreamPlayer *p_player);
-    AudioStreamPlayer *get_player();
-
     void set_soundfont(Ref<SoundFontFileReader> p_soundfont);
     Ref<SoundFontFileReader> get_soundfont();
-
-    void program_select(int chan, int bank_num, int preset_num);
-    void note_on(int chan, int key, int vel);
-    void note_off(int chan, int key);
-    // val value (0-16383 with 8192 being center)
-    void pitch_bend(int chan, int val);
 };
 }  // namespace godot
 

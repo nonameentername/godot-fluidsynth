@@ -5,16 +5,12 @@ public partial class main : Node2D
 {
     private MidiIO midi_io;
 
-    [Export]
     private Node fluidsynth;
-
-    private AudioStreamPlayer streamPlayer;
 
     public override void _Ready()
     {
-        //streamPlayer = (AudioStreamPlayer)GetNode("StreamPlayer");
-        //streamPlayer.Play();
-        //fluidsynth.Call("note_on", 1, 60, 90);
+        fluidsynth = (Node)Engine.GetSingleton("FluidSynth");
+        fluidsynth.Call("note_on", 1, 60, 90);
     }
 
     public void _on_fluidsynth_ready()
@@ -52,11 +48,11 @@ public partial class main : Node2D
     {
         if (button_pressed)
         {
-            //midi_io.NoteOn(1, 64, 90);
+            fluidsynth.Call("note_on", 1, 64, 90);
         }
         else
         {
-            //midi_io.NoteOff(1, 64);
+            fluidsynth.Call("note_off", 1, 64);
         }
     }
 
@@ -64,11 +60,11 @@ public partial class main : Node2D
     {
         if (button_pressed)
         {
-            //midi_io.NoteOn(3, 67, 90);
+            fluidsynth.Call("note_on", 13, 67, 90);
         }
         else
         {
-            //midi_io.NoteOff(3, 67);
+            fluidsynth.Call("note_off", 13, 67);
         }
     }
 

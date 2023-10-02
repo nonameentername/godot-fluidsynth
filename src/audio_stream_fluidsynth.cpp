@@ -1,10 +1,15 @@
 #include "audio_stream_fluidsynth.h"
+
+#include <godot_cpp/variant/utility_functions.hpp>
+
 #include "audio_stream_player_fluidsynth.h"
 
 using namespace godot;
 
 AudioStreamFluidSynth::AudioStreamFluidSynth()
     : mix_rate(44100), stereo(false), hz(639) {}
+
+AudioStreamFluidSynth::~AudioStreamFluidSynth() {}
 
 Ref<AudioStreamPlayback> AudioStreamFluidSynth::_instantiate_playback() {
     Ref<AudioStreamPlaybackFluidSynth> talking_tree;
@@ -19,13 +24,13 @@ void AudioStreamFluidSynth::reset() { set_position(0); }
 
 void AudioStreamFluidSynth::set_position(uint64_t p) { pos = p; }
 
-float AudioStreamFluidSynth::gen_tone() {
-    float inc = 1.0 / (float(mix_rate) / float(hz));
-    pos += inc;
-    if (pos > 1.0) {
-        pos -= 1.0;
+int AudioStreamFluidSynth::gen_tone(AudioFrame *p_buffer, float p_rate,
+                                    int p_frames) {
+    if (FluidSynth::get_singleton() != NULL) {
+        return FluidSynth::get_singleton()->gen_tone(p_buffer, p_rate,
+                                                     p_frames);
     }
-    return sin(2.0 * Math_PI * pos);
+    return 0;
 }
 
 void AudioStreamFluidSynth::_bind_methods() {

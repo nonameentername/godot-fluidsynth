@@ -1,9 +1,11 @@
 #include "audio_stream_player_fluidsynth.h"
+
 #include "audio_stream_fluidsynth.h"
 
 using namespace godot;
 
-AudioStreamPlaybackFluidSynth::AudioStreamPlaybackFluidSynth() : active(false) {}
+AudioStreamPlaybackFluidSynth::AudioStreamPlaybackFluidSynth()
+    : active(false) {}
 
 AudioStreamPlaybackFluidSynth::~AudioStreamPlaybackFluidSynth() {}
 
@@ -26,28 +28,22 @@ void AudioStreamPlaybackFluidSynth::_seek(float p_time) {
 }
 
 int AudioStreamPlaybackFluidSynth::_mix(AudioFrame *p_buffer, float p_rate,
-                                    int p_frames) {
+                                        int p_frames) {
     ERR_FAIL_COND_V(!active, 0);
     if (!active) {
         return 0;
     }
-    for (int i = 0; i < p_frames; i++) {
-        float sample = base->gen_tone();
 
-        AudioFrame audio_frame;
-        audio_frame.left = sample;
-        audio_frame.right = sample;
-        p_buffer[i] = audio_frame;
-    }
+    int frames = base->gen_tone(p_buffer, p_rate, p_frames);
     float mix_rate = base->mix_rate;
-    mixed += p_frames / mix_rate;
-    return p_frames;
+    mixed += frames / mix_rate;
+    return frames;
 }
 
 int AudioStreamPlaybackFluidSynth::_get_loop_count() const { return 10; }
 
 double AudioStreamPlaybackFluidSynth::_get_playback_position() const {
-    return mixed;
+    return 0;
 }
 
 float AudioStreamPlaybackFluidSynth::_get_length() const { return 0.0; }
