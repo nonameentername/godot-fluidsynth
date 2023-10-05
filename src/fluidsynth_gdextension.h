@@ -15,18 +15,18 @@ namespace godot {
 class FluidSynth : public Node {
     GDCLASS(FluidSynth, Node);
 
-  private:
+private:
     fluid_settings_t *settings;
     fluid_synth_t *synth;
     int sfont_id;
     Ref<SoundFontFileReader> soundfont;
     float *buffer;
 
-  protected:
+protected:
     static void _bind_methods();
     static FluidSynth *singleton;
 
-  public:
+public:
     FluidSynth();
     ~FluidSynth();
     static FluidSynth *get_singleton();
@@ -39,6 +39,6 @@ class FluidSynth : public Node {
     void pitch_bend(int chan, int val);
     int gen_tone(AudioFrame *p_buffer, float p_rate, int p_frames);
 };
-}  // namespace godot
+} // namespace godot
 
 #endif

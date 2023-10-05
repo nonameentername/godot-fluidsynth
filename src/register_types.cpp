@@ -19,7 +19,7 @@
 
 using namespace godot;
 
-static FluidSynth* fluidsynth_module;
+static FluidSynth *fluidsynth_module;
 
 void initialize_gdmidiplayer_module(ModuleInitializationLevel p_level) {
     if (p_level <= MODULE_INITIALIZATION_LEVEL_SCENE) {
@@ -32,8 +32,7 @@ void initialize_gdmidiplayer_module(ModuleInitializationLevel p_level) {
 
     ClassDB::register_class<FluidSynth>();
     fluidsynth_module = memnew(FluidSynth);
-    Engine::get_singleton()->register_singleton("FluidSynth",
-                                                FluidSynth::get_singleton());
+    Engine::get_singleton()->register_singleton("FluidSynth", FluidSynth::get_singleton());
 
     ClassDB::register_class<MidiFileReader>();
     ClassDB::register_class<SoundFontFileReader>();
@@ -60,17 +59,14 @@ void uninitialize_gdmidiplayer_module(ModuleInitializationLevel p_level) {
 
 extern "C" {
 // Initialization.
-GDExtensionBool GDE_EXPORT
-gdmidiplayer_library_init(GDExtensionInterfaceGetProcAddress p_get_proc_address,
-                          const GDExtensionClassLibraryPtr p_library,
-                          GDExtensionInitialization* r_initialization) {
-    godot::GDExtensionBinding::InitObject init_obj(p_get_proc_address,
-                                                   p_library, r_initialization);
+GDExtensionBool GDE_EXPORT gdmidiplayer_library_init(GDExtensionInterfaceGetProcAddress p_get_proc_address,
+                                                     const GDExtensionClassLibraryPtr p_library,
+                                                     GDExtensionInitialization *r_initialization) {
+    godot::GDExtensionBinding::InitObject init_obj(p_get_proc_address, p_library, r_initialization);
 
     init_obj.register_initializer(initialize_gdmidiplayer_module);
     init_obj.register_terminator(uninitialize_gdmidiplayer_module);
-    init_obj.set_minimum_library_initialization_level(
-        MODULE_INITIALIZATION_LEVEL_SCENE);
+    init_obj.set_minimum_library_initialization_level(MODULE_INITIALIZATION_LEVEL_SCENE);
 
     return init_obj.init();
 }

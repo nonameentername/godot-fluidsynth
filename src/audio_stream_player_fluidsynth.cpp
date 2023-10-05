@@ -1,13 +1,13 @@
 #include "audio_stream_player_fluidsynth.h"
-
 #include "audio_stream_fluidsynth.h"
 
 using namespace godot;
 
-AudioStreamPlaybackFluidSynth::AudioStreamPlaybackFluidSynth()
-    : active(false) {}
+AudioStreamPlaybackFluidSynth::AudioStreamPlaybackFluidSynth() : active(false) {
+}
 
-AudioStreamPlaybackFluidSynth::~AudioStreamPlaybackFluidSynth() {}
+AudioStreamPlaybackFluidSynth::~AudioStreamPlaybackFluidSynth() {
+}
 
 void AudioStreamPlaybackFluidSynth::_stop() {
     active = false;
@@ -27,8 +27,7 @@ void AudioStreamPlaybackFluidSynth::_seek(float p_time) {
     base->set_position(uint64_t(p_time * base->mix_rate) << MIX_FRAC_BITS);
 }
 
-int AudioStreamPlaybackFluidSynth::_mix(AudioFrame *p_buffer, float p_rate,
-                                        int p_frames) {
+int AudioStreamPlaybackFluidSynth::_mix(AudioFrame *p_buffer, float p_rate, int p_frames) {
     ERR_FAIL_COND_V(!active, 0);
     if (!active) {
         return 0;
@@ -40,14 +39,21 @@ int AudioStreamPlaybackFluidSynth::_mix(AudioFrame *p_buffer, float p_rate,
     return frames;
 }
 
-int AudioStreamPlaybackFluidSynth::_get_loop_count() const { return 10; }
+int AudioStreamPlaybackFluidSynth::_get_loop_count() const {
+    return 10;
+}
 
 double AudioStreamPlaybackFluidSynth::_get_playback_position() const {
     return 0;
 }
 
-float AudioStreamPlaybackFluidSynth::_get_length() const { return 0.0; }
+float AudioStreamPlaybackFluidSynth::_get_length() const {
+    return 0.0;
+}
 
-bool AudioStreamPlaybackFluidSynth::_is_playing() const { return active; }
+bool AudioStreamPlaybackFluidSynth::_is_playing() const {
+    return active;
+}
 
-void AudioStreamPlaybackFluidSynth::_bind_methods() {}
+void AudioStreamPlaybackFluidSynth::_bind_methods() {
+}

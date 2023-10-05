@@ -20,13 +20,13 @@ namespace godot {
 class GDFluidSynth : public Node {
     GDCLASS(GDFluidSynth, Node)
 
-  private:
+private:
     Ref<SoundFontFileReader> soundfont;
 
-  protected:
+protected:
     void _notification(int p_what);
 
-  public:
+public:
     static void _bind_methods();
 
     GDFluidSynth();
@@ -38,6 +38,6 @@ class GDFluidSynth : public Node {
     void set_soundfont(Ref<SoundFontFileReader> p_soundfont);
     Ref<SoundFontFileReader> get_soundfont();
 };
-}  // namespace godot
+} // namespace godot
 
 #endif

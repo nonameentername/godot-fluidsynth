@@ -15,8 +15,10 @@ class AudioStreamPlaybackFluidSynth : public AudioStreamPlayback {
     GDCLASS(AudioStreamPlaybackFluidSynth, AudioStreamPlayback)
     friend class AudioStreamFluidSynth;
 
-  private:
-    enum { PCM_BUFFER_SIZE = 4096 };
+private:
+    enum {
+        PCM_BUFFER_SIZE = 4096
+    };
     enum {
         MIX_FRAC_BITS = 13,
         MIX_FRAC_LEN = (1 << MIX_FRAC_BITS),
@@ -26,7 +28,7 @@ class AudioStreamPlaybackFluidSynth : public AudioStreamPlayback {
     bool active;
     float mixed;
 
-  public:
+public:
     static void _bind_methods();
 
     virtual void _start(float p_from_pos = 0.0);
@@ -40,6 +42,6 @@ class AudioStreamPlaybackFluidSynth : public AudioStreamPlayback {
     AudioStreamPlaybackFluidSynth();
     ~AudioStreamPlaybackFluidSynth();
 };
-}  // namespace godot
+} // namespace godot
 
 #endif

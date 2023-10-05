@@ -11,13 +11,13 @@ namespace godot {
 class MidiFileReader : public Resource {
     GDCLASS(MidiFileReader, Resource)
 
-  private:
+private:
     String file;
 
     PackedByteArray array_data;
     void clear_data();
 
-  public:
+public:
     MidiFileReader();
     ~MidiFileReader();
 
@@ -30,6 +30,6 @@ class MidiFileReader : public Resource {
     static void _bind_methods();
 };
 
-}  // namespace godot
+} // namespace godot
 
 #endif

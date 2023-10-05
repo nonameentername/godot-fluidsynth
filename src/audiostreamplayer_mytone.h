@@ -15,8 +15,10 @@ class AudioStreamPlaybackMyTone : public AudioStreamPlayback {
     GDCLASS(AudioStreamPlaybackMyTone, AudioStreamPlayback)
     friend class AudioStreamMyTone;
 
-  private:
-    enum { PCM_BUFFER_SIZE = 4096 };
+private:
+    enum {
+        PCM_BUFFER_SIZE = 4096
+    };
     enum {
         MIX_FRAC_BITS = 13,
         MIX_FRAC_LEN = (1 << MIX_FRAC_BITS),
@@ -26,20 +28,20 @@ class AudioStreamPlaybackMyTone : public AudioStreamPlayback {
     bool active;
     float mixed;
 
-  public:
+public:
     static void _bind_methods();
 
     virtual void _start(float p_from_pos = 0.0);
     virtual void _stop();
     virtual bool _is_playing() const;
-    virtual int _get_loop_count() const;  // times it looped
+    virtual int _get_loop_count() const; // times it looped
     virtual double _get_playback_position() const;
     virtual void _seek(float p_time);
     virtual int _mix(AudioFrame *p_buffer, float p_rate_scale, int p_frames);
-    virtual float _get_length() const;  // if supported, otherwise return 0
+    virtual float _get_length() const; // if supported, otherwise return 0
     AudioStreamPlaybackMyTone();
     ~AudioStreamPlaybackMyTone();
 };
-}  // namespace godot
+} // namespace godot
 
 #endif

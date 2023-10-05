@@ -23,25 +23,25 @@ namespace godot {
 class GDMidiAudioStreamPlayer : public AudioStreamPlayer {
     GDCLASS(GDMidiAudioStreamPlayer, AudioStreamPlayer)
 
-  private:
+private:
     Ref<MidiFileReader> midi_file;
     bool in_editor;
 
     fluid_player_t *player;
 
-  public:
+public:
     static void _bind_methods();
 
     GDMidiAudioStreamPlayer();
     ~GDMidiAudioStreamPlayer();
 
-    void _ready();  // our initializer called by Godot
+    void _ready(); // our initializer called by Godot
     void _process(float delta);
 
     void set_midi_file(Ref<MidiFileReader> p_midi_file);
     Ref<MidiFileReader> get_midi_file();
 };
 
-}  // namespace godot
+} // namespace godot
 
 #endif

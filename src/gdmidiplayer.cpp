@@ -6,17 +6,13 @@
 using namespace godot;
 
 void GDMidiAudioStreamPlayer::_bind_methods() {
-    ClassDB::bind_method(D_METHOD("set_midi_file", "midi_file"),
-                         &GDMidiAudioStreamPlayer::set_midi_file);
+    ClassDB::bind_method(D_METHOD("set_midi_file", "midi_file"), &GDMidiAudioStreamPlayer::set_midi_file);
 
-    ClassDB::bind_method(D_METHOD("get_midi_file"),
-                         &GDMidiAudioStreamPlayer::get_midi_file);
+    ClassDB::bind_method(D_METHOD("get_midi_file"), &GDMidiAudioStreamPlayer::get_midi_file);
 
-    ClassDB::add_property(
-        "GDMidiAudioStreamPlayer",
-        PropertyInfo(Variant::OBJECT, "midi_file", PROPERTY_HINT_RESOURCE_TYPE,
-                     "MidiFileReader"),
-        "set_midi_file", "get_midi_file");
+    ClassDB::add_property("GDMidiAudioStreamPlayer",
+                          PropertyInfo(Variant::OBJECT, "midi_file", PROPERTY_HINT_RESOURCE_TYPE, "MidiFileReader"),
+                          "set_midi_file", "get_midi_file");
 }
 
 GDMidiAudioStreamPlayer::GDMidiAudioStreamPlayer() {
@@ -34,35 +30,8 @@ void GDMidiAudioStreamPlayer::_ready() {
     godot::UtilityFunctions::print("GDMidiAudioStreamPlayer::_ready");
 }
 
-void GDMidiAudioStreamPlayer::_process(float delta) {}
-
-// void GDMidiAudioStreamPlayer::_notification(int p_what) {
-//
-//     AudioStreamPlayer::_notification(p_what);
-//
-//	switch (p_what) {
-//		case NOTIFICATION_READY: {
-//			set_process_internal(true);
-//		}
-//		case NOTIFICATION_INTERNAL_PROCESS: {
-//             /*
-//             fluid_player_play(player);
-//             if (fluid_player_get_status(player) == FLUID_PLAYER_READY) {
-//             }
-//
-//             if (fluid_player_get_status(player) == FLUID_PLAYER_DONE) {
-//                 fluid_player_stop(player);
-//                 fluid_player_join(player);
-//                 fluid_player_seek(player, 0);
-//                 fluid_player_play(player);
-//             }
-//             */
-//			break;
-//		}
-//         //default:
-//         //    godot::UtilityFunctions::print("_notification", p_what);
-//	}
-// }
+void GDMidiAudioStreamPlayer::_process(float delta) {
+}
 
 void GDMidiAudioStreamPlayer::set_midi_file(Ref<MidiFileReader> p_midi_file) {
     midi_file = p_midi_file;

@@ -13,7 +13,7 @@ namespace godot {
 class SoundFontFileReader : public Resource {
     GDCLASS(SoundFontFileReader, Resource)
 
-  private:
+private:
     String file;
 
     int position;
@@ -21,7 +21,7 @@ class SoundFontFileReader : public Resource {
     char *array_data;
     void clear_data();
 
-  public:
+public:
     SoundFontFileReader();
     ~SoundFontFileReader();
 
@@ -47,6 +47,6 @@ class SoundFontFileReader : public Resource {
     static void _bind_methods();
 };
 
-}  // namespace godot
+} // namespace godot
 
 #endif

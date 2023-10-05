@@ -15,28 +15,28 @@ namespace godot {
 class AudioStreamFluidSynth : public AudioStream {
     GDCLASS(AudioStreamFluidSynth, AudioStream)
 
-  private:
+private:
     friend class AudioStreamPlaybackFluidSynth;
     float pos;
     int mix_rate;
     bool stereo;
     int hz;
 
-  public:
+public:
     void reset();
     void set_position(uint64_t pos);
     virtual String get_stream_name() const;
     int gen_tone(AudioFrame *p_buffer, float p_rate, int p_frames);
     virtual float get_length() const {
         return 0;
-    }  // if supported, otherwise return 0
+    } // if supported, otherwise return 0
     AudioStreamFluidSynth();
     ~AudioStreamFluidSynth();
     Ref<AudioStreamPlayback> _instantiate_playback();
 
-  protected:
+protected:
     static void _bind_methods();
 };
-}  // namespace godot
+} // namespace godot
 
 #endif
