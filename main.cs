@@ -3,8 +3,6 @@ using System;
 
 public partial class main : Node2D
 {
-    private MidiIO midi_io;
-
     private Node fluidsynth;
 
     public override void _Ready()
@@ -35,12 +33,10 @@ public partial class main : Node2D
         if (button_pressed)
         {
             fluidsynth.Call("note_on", 1, 60, 90);
-            //midi_io.NoteOn(1, 60, 90);
         }
         else
         {
             fluidsynth.Call("note_off", 1, 60);
-            //midi_io.NoteOff(1, 60);
         }
     }
 
@@ -70,7 +66,6 @@ public partial class main : Node2D
 
     public void _on_VSlider_value_changed(float value)
     {
-        //midi_io.SendControlChannel("cutoff", value);
     }
 
 }

@@ -56,16 +56,16 @@ offset_right = 413.0
 offset_bottom = 241.0
 max_value = 3000.0
 
-[node name="fluidsynth" type="GDFluidSynth" parent="."]
+[node name="soundfont" type="GDFluidSynth" parent="."]
 soundfont = ExtResource("2_8ugko")
 
-[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+[node name="FluidSynthPlayer" type="AudioStreamPlayer" parent="."]
 stream = SubResource("AudioStreamFluidSynth_vb6a5")
 autoplay = true
 
-[node name="AudioStreamPlayer2" type="AudioStreamPlayer" parent="."]
+[node name="MyTone" type="AudioStreamPlayer" parent="."]
 stream = SubResource("AudioStreamMyTone_ed7ja")
-volume_db = -54.342
+volume_db = -40.0
 
 [connection signal="toggled" from="CheckButton" to="." method="_on_CheckButton_toggled"]
 [connection signal="toggled" from="CheckButton2" to="." method="_on_CheckButton2_toggled"]
