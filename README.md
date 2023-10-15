@@ -1,3 +1,15 @@
+godot-fluidsynth
+================
+
+Godot gdextension fluidsynth library to allow playing music using fluidsynth.
+
+How to Install
+--------------
+
+Install system dependencies for Ubuntu:
+
+    apt install libfluidsynth-dev abcmidi
+
 Build
 -----
 
@@ -5,14 +17,14 @@ Initialize git submodules:
 
     git submodule update --init --recursive
 
+Create assets:
+
+    make assets
+
 Compile godot-cpp library:
 
     make godot-cpp
 
-Install dependencies:
-
-    sudo apt install libfluidsynth-dev abcmidi
-
-Compile gdnative library:
+Compile gdextension library:
 
     make
