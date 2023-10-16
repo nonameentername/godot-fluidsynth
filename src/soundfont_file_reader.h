@@ -17,8 +17,7 @@ private:
     String file;
 
     int position;
-    long array_size;
-    char *array_data;
+    PackedByteArray array_data;
     void clear_data();
 
 public:

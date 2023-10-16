@@ -7,7 +7,7 @@
 #include <godot_cpp/classes/audio_stream.hpp>
 #include <godot_cpp/godot.hpp>
 
-#include "gdfluidsynth.h"
+#include "midi_file_reader.h"
 #include "soundfont_file_reader.h"
 
 namespace godot {
@@ -21,6 +21,8 @@ private:
     int mix_rate;
     bool stereo;
     int hz;
+    Ref<SoundFontFileReader> soundfont;
+    Ref<MidiFileReader> midi_file;
 
 public:
     void reset();
@@ -32,7 +34,11 @@ public:
     } // if supported, otherwise return 0
     AudioStreamFluidSynth();
     ~AudioStreamFluidSynth();
-    Ref<AudioStreamPlayback> _instantiate_playback();
+    virtual Ref<AudioStreamPlayback> _instantiate_playback() const override;
+    void set_soundfont(Ref<SoundFontFileReader> p_soundfont);
+    Ref<SoundFontFileReader> get_soundfont();
+    void set_midi_file(Ref<MidiFileReader> p_midi_file);
+    Ref<MidiFileReader> get_midi_file();
 
 protected:
     static void _bind_methods();

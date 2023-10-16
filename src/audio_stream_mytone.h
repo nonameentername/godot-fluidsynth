@@ -25,7 +25,7 @@ public:
         return 0;
     } // if supported, otherwise return 0
     AudioStreamMyTone();
-    Ref<AudioStreamPlayback> _instantiate_playback();
+    virtual Ref<AudioStreamPlayback> _instantiate_playback() const override;
 
 protected:
     static void _bind_methods();

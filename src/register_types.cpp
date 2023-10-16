@@ -8,12 +8,10 @@
 #include <godot_cpp/godot.hpp>
 
 #include "audio_stream_fluidsynth.h"
+#include "audio_stream_mytone.h"
 #include "audio_stream_player_fluidsynth.h"
-#include "audiostream_mytone.h"
-#include "audiostreamplayer_mytone.h"
+#include "audio_stream_player_mytone.h"
 #include "fluidsynth_gdextension.h"
-#include "gdfluidsynth.h"
-#include "gdmidiplayer.h"
 #include "midi_file_reader.h"
 #include "soundfont_file_reader.h"
 
@@ -36,8 +34,6 @@ void initialize_gdmidiplayer_module(ModuleInitializationLevel p_level) {
 
     ClassDB::register_class<MidiFileReader>();
     ClassDB::register_class<SoundFontFileReader>();
-    ClassDB::register_class<GDMidiAudioStreamPlayer>();
-    ClassDB::register_class<GDFluidSynth>();
     ClassDB::register_class<AudioStreamPlaybackMyTone>();
     ClassDB::register_class<AudioStreamMyTone>();
     ClassDB::register_class<AudioStreamPlaybackFluidSynth>();

@@ -42,6 +42,10 @@ func _get_import_order():
 	return 0
 
 
+func _get_priority():
+	return 1
+
+
 func _import(source_file, save_path, options, r_platform_variants, r_gen_files):
 	var file = FileAccess.open(source_file, FileAccess.READ)
 	if file == null:

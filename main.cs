@@ -5,20 +5,18 @@ public partial class main : Node2D
 {
     private Node fluidsynth;
 
+    [Export(PropertyHint.ResourceType, "MidiFileReader")]
+    private Resource midi_file;
+
     public override void _Ready()
     {
         fluidsynth = (Node)Engine.GetSingleton("FluidSynth");
-        fluidsynth.Call("note_on", 1, 60, 90);
+        fluidsynth.Call("play_midi");
     }
 
     public void _on_fluidsynth_ready()
     {
         GD.Print("fluidsynth _ready");
-    }
-
-    public override void _Process(double delta)
-    {
-        //GD.Print(fluidsynth.Playing);
     }
 
     public override bool _Set(StringName property, Variant value)
@@ -64,8 +62,14 @@ public partial class main : Node2D
         }
     }
 
-    public void _on_VSlider_value_changed(float value)
+    public void _on_v_slider_value_changed(double value)
     {
+        fluidsynth.Call("pitch_bend", 1, value);
+    }
+
+    public void _on_button_pressed()
+    {
+        fluidsynth.Call("play_midi", midi_file);
     }
 
 }

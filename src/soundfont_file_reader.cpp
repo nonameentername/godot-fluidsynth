@@ -3,15 +3,9 @@
 using namespace godot;
 
 SoundFontFileReader::SoundFontFileReader() {
-    array_data = NULL;
 }
 
 SoundFontFileReader::~SoundFontFileReader() {
-    /*
-    if (array_data != NULL) {
-            memfree(array_data);
-    }
-    */
 }
 
 void SoundFontFileReader::_init() {
@@ -22,36 +16,27 @@ void SoundFontFileReader::clear_data() {
 
 void SoundFontFileReader::set_data(PackedByteArray data) {
     PackedByteArray in_array = data;
-
-    /*
-    if (array_data != NULL) {
-            memfree(array_data);
+    PackedByteArray out_array;
+    for (int i = 0; i < in_array.size(); i++) {
+        out_array.append(in_array[i]);
     }
-    */
-
-    array_size = in_array.size();
-    array_data = (char *)memalloc((array_size + 1) * sizeof(char));
-
-    for (int i = 0; i < array_size; i++) {
-        array_data[i] = in_array[i];
-    }
-    array_data[array_size] = 0;
+    array_data = out_array;
 }
 
 PackedByteArray SoundFontFileReader::get_data() {
     PackedByteArray out_array;
-    for (int i = 0; i < array_size; i++) {
+    for (int i = 0; i < array_data.size(); i++) {
         out_array.append(array_data[i]);
     }
     return out_array;
 }
 
 char *SoundFontFileReader::get_array_data() {
-    return array_data;
+    return (char *)array_data.ptr();
 }
 
 long SoundFontFileReader::get_array_size() {
-    return array_size;
+    return array_data.size();
 }
 
 String SoundFontFileReader::get_extension() {
@@ -63,7 +48,8 @@ void SoundFontFileReader::open() {
 }
 
 int SoundFontFileReader::read(void *buf, long long count) {
-    memcpy(buf, (array_data + position), count);
+    char *ptr = (char *)array_data.ptr() + position;
+    memcpy(buf, ptr, count);
     position = position + count;
 
     return FLUID_OK;
@@ -78,11 +64,11 @@ int SoundFontFileReader::seek(long long offset, int origin) {
         position = position + offset;
         break;
     default:
-        position = array_size + offset;
+        position = array_data.size() + offset;
         break;
     }
 
-    if (position < 0 || position > array_size) {
+    if (position < 0 || position > array_data.size()) {
         return FLUID_FAILED;
     }
 

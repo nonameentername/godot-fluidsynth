@@ -1,12 +1,12 @@
-#include "audiostream_mytone.h"
-#include "audiostreamplayer_mytone.h"
+#include "audio_stream_mytone.h"
+#include "audio_stream_player_mytone.h"
 
 using namespace godot;
 
 AudioStreamMyTone::AudioStreamMyTone() : mix_rate(44100), stereo(false), hz(639) {
 }
 
-Ref<AudioStreamPlayback> AudioStreamMyTone::_instantiate_playback() {
+Ref<AudioStreamPlayback> AudioStreamMyTone::_instantiate_playback() const {
     Ref<AudioStreamPlaybackMyTone> talking_tree;
     talking_tree.instantiate();
     talking_tree->base = Ref<AudioStreamMyTone>(this);

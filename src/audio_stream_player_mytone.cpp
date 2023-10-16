@@ -1,5 +1,5 @@
-#include "audiostreamplayer_mytone.h"
-#include "audiostream_mytone.h"
+#include "audio_stream_player_mytone.h"
+#include "audio_stream_mytone.h"
 
 using namespace godot;
 
@@ -14,20 +14,19 @@ void AudioStreamPlaybackMyTone::_stop() {
     base->reset();
 }
 
-void AudioStreamPlaybackMyTone::_start(float p_from_pos) {
+void AudioStreamPlaybackMyTone::_start(double p_from_pos) {
     active = true;
     mixed = 0.0;
 }
 
-void AudioStreamPlaybackMyTone::_seek(float p_time) {
-    float max = _get_length();
+void AudioStreamPlaybackMyTone::_seek(double p_time) {
     if (p_time < 0) {
         p_time = 0;
     }
     base->set_position(uint64_t(p_time * base->mix_rate) << MIX_FRAC_BITS);
 }
 
-int AudioStreamPlaybackMyTone::_mix(AudioFrame *p_buffer, float p_rate, int p_frames) {
+int AudioStreamPlaybackMyTone::_mix(AudioFrame *p_buffer, double p_rate, int p_frames) {
     ERR_FAIL_COND_V(!active, 0);
     if (!active) {
         return 0;
